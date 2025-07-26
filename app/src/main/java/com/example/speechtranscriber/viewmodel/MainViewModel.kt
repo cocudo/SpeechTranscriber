@@ -9,29 +9,64 @@ import kotlinx.coroutines.flow.StateFlow
 
 class MainViewModel : ViewModel() {
 
-    // mutable state flow para el texto reconocido por voz
-    private val _transcription = mutableStateOf("Pulsa el botón para comenzar a dictar")
-    val transcription: State<String> = _transcription
+    // Texto temporal que se muestra en tiempo real durante la transcripción
+    private val _temporaryTranscription = mutableStateOf("")
+    val temporaryTranscription: State<String> = _temporaryTranscription
+
+    // Texto permanente que se acumula con las transcripciones completadas
+    private val _permanentTranscription = mutableStateOf("")
+    val permanentTranscription: State<String> = _permanentTranscription
 
     //Estado de la escucha
     private val _isListening = mutableStateOf(false)
     val isListening: State<Boolean> = _isListening
 
+    // Estado para controlar si se tienen permisos
+    private val _hasAudioPermission = mutableStateOf(false)
+    val hasAudioPermission: State<Boolean> = _hasAudioPermission
+
     private var recognizerHelper: SpeechRecognizerHelper? = null
 
-    //Metodo para actualizar el texto reconocido por voz
-    fun updateTranscription(text: String) {
-        _transcription.value = text
+    // Método para actualizar el texto temporal en tiempo real
+    fun updateTemporaryTranscription(text: String) {
+        _temporaryTranscription.value = text
     }
 
-    //añadimos una funcion para acumular el texto reconocido por voz
-    fun appendTranscription(text: String) {
-        val currentTranscription = _transcription.value
-        _transcription.value += if(currentTranscription.isBlank()) text else "$currentTranscription $text"
+    // Método para añadir texto al área temporal durante la transcripción
+    fun appendTemporaryTranscription(text: String) {
+        val currentTranscription = _temporaryTranscription.value
+        _temporaryTranscription.value = if(currentTranscription.isBlank()) text else "$currentTranscription $text"
     }
 
-    fun clearTranscription() {
-        _transcription.value = ""
+    // Método para limpiar el texto temporal
+    fun clearTemporaryTranscription() {
+        _temporaryTranscription.value = ""
+    }
+
+    // Método para finalizar la transcripción (mover temporal a permanente)
+    fun finalizeTranscription() {
+        if (_temporaryTranscription.value.isNotBlank()) {
+            val currentPermanent = _permanentTranscription.value
+            val newText = _temporaryTranscription.value
+            
+            _permanentTranscription.value = if (currentPermanent.isBlank()) {
+                newText
+            } else {
+                "$currentPermanent\n\n$newText"
+            }
+            
+            _temporaryTranscription.value = ""
+        }
+    }
+
+    // Método para cancelar la transcripción (borrar temporal sin mover a permanente)
+    fun cancelTranscription() {
+        _temporaryTranscription.value = ""
+    }
+
+    // Método para limpiar todo el texto permanente
+    fun clearPermanentTranscription() {
+        _permanentTranscription.value = ""
     }
 
     fun onListeningStopped() {
@@ -44,5 +79,10 @@ class MainViewModel : ViewModel() {
 
     fun onListeningStarted() {
         _isListening.value = true
+    }
+
+    // Método para actualizar el estado de permisos
+    fun updateAudioPermission(hasPermission: Boolean) {
+        _hasAudioPermission.value = hasPermission
     }
 }

@@ -1,0 +1,36 @@
+---
+alwaysApply: true
+---
+# Speech Transcriber
+
+Estamos desarrollando una App que sea capaz de transcribir de voz a texto. 
+
+La pantalla principal tendrá unos botones que permitan iniciar/parar la escucha del micrófono del dispositivo móvil, y uno para cancelar la transcripción. Al iniciar, la aplicación deberá comprobar que se tiene concedido el permiso para utilizar el microfono, en caso contrario mostrará un mensaje de aviso y un botón para conceder el permiso, y el botón para iniciar la escucha y posterior transcripción permanecera deshabilitado. También tendrá un area de texto temporal donde se irá mostrando en tiempo real el texto según se va transcribiendo, y uno permanente donde el texto se copiará cuando se pare la transcripción. 
+
+Si se pulsa el botón cancelar, no se guardará el contenido del area de texto temporal en el area permanente, borrandose la transcripcion actual.
+
+La transcripción podrá ser almacenada para su posterior revisión. También podrá ser exportada como mínimo a formato texto, y tendrá la funcionalidad de compartir típica de telefonos android, donde aparecerán diversas aplicaciones, mensajeria, correo electronico, etc.
+
+Cuando ocurra un problema o error durante el proceso de transcripcion, se mostrará un Toast para mostrarlo por pantalla. 
+
+Es importante que una vez la aplicación se cierre, no quede el micrófono activo en segundo plano.
+
+## Tecnologías
+
+ Estas son las tecnologías que vamos a utilizar.
+ - Jetpack Compose para las interfaces.
+ - Material 3 para el diseño.
+ - Kotlin como lenguaje de programación.
+ - Los ViewModels de Architecture Components para la comunicacion entre UI y capa de datos.
+ - Hilt como inyector de dependencias.
+ - Para la persistencia de datos usaremos Room. Recuerda usar KSP y no KAPT para las dependencias que usan codigo, como el compiler de Room.
+
+ ## Arquitectura
+ Usaremos una arquitectura sencilla.
+ - LA UI en Compose.
+ - Comunicación con la capa de datos mediante MVVM.
+ - La capa de datos estará formada por repositorios, que ocultaran las librerias concretas que se utilizarán.
+
+ ## Reglas extra
+ - Siempre que termines de generar código, compílalo para comprobar que no hay problemas. Para ello utiliza compileDebugKotlin.
+ - Aunque pienses que los build.gradle.kts están incorrectos, los actuales son válidos. Si tienes que modificar el libs.versions o los ficheros gradle, simplemente añade lo nuevo que necesites y no modifiques lo existente.

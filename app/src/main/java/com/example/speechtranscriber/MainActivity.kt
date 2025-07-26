@@ -31,34 +31,38 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge() //Comentamos el EdgeToEdge en prevision de usarlo más adelante cuando afinemos la interfaz.
+        enableEdgeToEdge()
 
         speechHelper = SpeechRecognizerHelper(this,
-            onResult = { text -> viewModel.appendTranscription(text)},
+            onResult = { text -> viewModel.appendTemporaryTranscription(text)},
             onError = { error ->
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
                 //actualizacion de texto solo si es un error critico.
                 if (error.contains("Permisos")|| error.contains("No se pudo iniciar")){
-                    viewModel.updateTranscription("Error: $error")
+                    viewModel.updateTemporaryTranscription("Error: $error")
                 }
             }
         )
 
         viewModel.setSpeecRecognizer(speechHelper)
 
+        // Verificar permisos al iniciar
+        checkAudioPermission()
+
         // Preparamos la solicitud de permiso
         requestAudioPermission = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                viewModel.onListeningStarted()
+                viewModel.updateAudioPermission(true)
+                // NO iniciamos automáticamente la escucha - el usuario debe pulsar el botón
             } else {
+                viewModel.updateAudioPermission(false)
                 Toast.makeText(
                     this,
                     "Permiso de micrófono denegado",
                     Toast.LENGTH_LONG
                 ).show()
-                //viewModel.updateTranscription("Permiso de micrófono denegado.")
             }
         }
 
@@ -80,19 +84,31 @@ class MainActivity : ComponentActivity() {
                                 viewModel.onListeningStarted()
                             } else {
                                 requestAudioPermission.launch(android.Manifest.permission.RECORD_AUDIO)
-
                             }
                         },
                         onStopListening = {
                             speechHelper.stopListening()
                             viewModel.onListeningStopped()
+                            // Finalizar la transcripción moviendo el texto temporal al permanente
+                            viewModel.finalizeTranscription()
+                        },
+                        onCancelTranscription = {
+                            speechHelper.stopListening()
+                            viewModel.onListeningStopped()
+                            // Cancelar la transcripción borrando el texto temporal
+                            viewModel.cancelTranscription()
                         }
                     )
-
                 }
-
             }
         }
+    }
+
+    private fun checkAudioPermission() {
+        val hasPermission = ContextCompat.checkSelfPermission(
+            this, android.Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+        viewModel.updateAudioPermission(hasPermission)
     }
 
     override fun onDestroy() {
