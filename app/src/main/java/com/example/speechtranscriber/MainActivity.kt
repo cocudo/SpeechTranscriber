@@ -18,10 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import com.example.speechtranscriber.model.SpeechRecognizerHelper
+import com.example.speechtranscriber.permission.PermissionState
 import com.example.speechtranscriber.ui.MainScreen
 import com.example.speechtranscriber.ui.theme.SpeechTranscriberTheme
 import com.example.speechtranscriber.viewmodel.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
@@ -55,9 +58,11 @@ class MainActivity : ComponentActivity() {
         ) { isGranted: Boolean ->
             if (isGranted) {
                 viewModel.updateAudioPermission(true)
+                viewModel.updatePermissionState(PermissionState.Granted)
                 // NO iniciamos automáticamente la escucha - el usuario debe pulsar el botón
             } else {
                 viewModel.updateAudioPermission(false)
+                viewModel.updatePermissionState(PermissionState.Denied)
                 Toast.makeText(
                     this,
                     "Permiso de micrófono denegado",
@@ -74,6 +79,9 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding),
                         onRequestPermission = {
                             requestAudioPermission.launch(android.Manifest.permission.RECORD_AUDIO)
+                        },
+                        onOpenSettings = {
+                            viewModel.openAppSettings(this)
                         },
                         onStartListening = {
                             if (ContextCompat.checkSelfPermission(
@@ -109,6 +117,14 @@ class MainActivity : ComponentActivity() {
             this, android.Manifest.permission.RECORD_AUDIO
         ) == PackageManager.PERMISSION_GRANTED
         viewModel.updateAudioPermission(hasPermission)
+        
+        // Sincronizar también el nuevo sistema de permisos
+        val permissionState = if (hasPermission) {
+            PermissionState.Granted
+        } else {
+            PermissionState.NotRequested
+        }
+        viewModel.updatePermissionState(permissionState)
     }
 
     override fun onDestroy() {
