@@ -1,13 +1,23 @@
 package com.example.speechtranscriber.viewmodel
 
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.speechtranscriber.model.SpeechRecognizerHelper
+import com.example.speechtranscriber.permission.PermissionManager
+import com.example.speechtranscriber.permission.PermissionState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val permissionManager: PermissionManager
+) : ViewModel() {
 
     // Texto temporal que se muestra en tiempo real durante la transcripción
     private val _temporaryTranscription = mutableStateOf("")
@@ -26,6 +36,9 @@ class MainViewModel : ViewModel() {
     val hasAudioPermission: State<Boolean> = _hasAudioPermission
 
     private var recognizerHelper: SpeechRecognizerHelper? = null
+
+    private val _permissionState = MutableStateFlow<PermissionState>(PermissionState.NotRequested)
+    val permissionState: StateFlow<PermissionState> = _permissionState
 
     // Método para actualizar el texto temporal en tiempo real
     fun updateTemporaryTranscription(text: String) {
@@ -84,5 +97,19 @@ class MainViewModel : ViewModel() {
     // Método para actualizar el estado de permisos
     fun updateAudioPermission(hasPermission: Boolean) {
         _hasAudioPermission.value = hasPermission
+    }
+
+    fun checkMicrophonePermission() {
+        viewModelScope.launch {
+            _permissionState.value = permissionManager.checkMicrophonePermission()
+        }
+    }
+
+    fun updatePermissionState(state: PermissionState) {
+        _permissionState.value = state
+    }
+
+    fun openAppSettings(context: Context) {
+        permissionManager.openAppSettings(context)
     }
 }
