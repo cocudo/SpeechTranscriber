@@ -57,11 +57,9 @@ class MainActivity : ComponentActivity() {
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                viewModel.updateAudioPermission(true)
                 viewModel.updatePermissionState(PermissionState.Granted)
                 // NO iniciamos automáticamente la escucha - el usuario debe pulsar el botón
             } else {
-                viewModel.updateAudioPermission(false)
                 viewModel.updatePermissionState(PermissionState.Denied)
                 Toast.makeText(
                     this,
@@ -116,9 +114,8 @@ class MainActivity : ComponentActivity() {
         val hasPermission = ContextCompat.checkSelfPermission(
             this, android.Manifest.permission.RECORD_AUDIO
         ) == PackageManager.PERMISSION_GRANTED
-        viewModel.updateAudioPermission(hasPermission)
         
-        // Sincronizar también el nuevo sistema de permisos
+        // Usar solo el nuevo sistema de permisos
         val permissionState = if (hasPermission) {
             PermissionState.Granted
         } else {

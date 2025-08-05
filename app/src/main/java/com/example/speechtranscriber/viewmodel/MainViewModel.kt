@@ -31,10 +31,6 @@ class MainViewModel @Inject constructor(
     private val _isListening = mutableStateOf(false)
     val isListening: State<Boolean> = _isListening
 
-    // Estado para controlar si se tienen permisos
-    private val _hasAudioPermission = mutableStateOf(false)
-    val hasAudioPermission: State<Boolean> = _hasAudioPermission
-
     private var recognizerHelper: SpeechRecognizerHelper? = null
 
     private val _permissionState = MutableStateFlow<PermissionState>(PermissionState.NotRequested)
@@ -92,11 +88,6 @@ class MainViewModel @Inject constructor(
 
     fun onListeningStarted() {
         _isListening.value = true
-    }
-
-    // Método para actualizar el estado de permisos
-    fun updateAudioPermission(hasPermission: Boolean) {
-        _hasAudioPermission.value = hasPermission
     }
 
     fun checkMicrophonePermission() {
