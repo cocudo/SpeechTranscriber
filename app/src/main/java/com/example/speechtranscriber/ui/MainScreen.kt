@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.speechtranscriber.permission.PermissionState
 import com.example.speechtranscriber.permission.PermissionStatusCard
+import com.example.speechtranscriber.export.ExportButton
 import com.example.speechtranscriber.viewmodel.MainViewModel
 
 @Composable
@@ -25,7 +26,8 @@ fun MainScreen(
     onOpenSettings: () -> Unit,
     onStartListening: () -> Unit,
     onStopListening: () -> Unit,
-    onCancelTranscription: () -> Unit
+    onCancelTranscription: () -> Unit,
+    onExport: () -> Unit
 ) {
     val temporaryTranscription by viewModel.temporaryTranscription
     val permanentTranscription by viewModel.permanentTranscription
@@ -192,6 +194,12 @@ fun MainScreen(
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
+
+                    // Botón de exportar
+                    ExportButton(
+                        onExport = onExport,
+                        enabled = permanentTranscription.isNotBlank()
+                    )
                 }
             }
         }

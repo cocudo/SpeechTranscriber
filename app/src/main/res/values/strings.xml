@@ -8,4 +8,8 @@
     <string name="permission_request">Solicitar permiso</string>
     <string name="permission_open_settings">Abrir ajustes</string>
     <string name="permission_info_tooltip">La app necesita acceso al micrófono para transcribir tu voz a texto.</string>
+    <string name="export_transcription">Exportar Transcripción</string>
+    <string name="export_success">Transcripción exportada correctamente</string>
+    <string name="export_error">Error al exportar la transcripción</string>
+    <string name="export_no_content">No hay contenido para exportar</string>
 </resources>

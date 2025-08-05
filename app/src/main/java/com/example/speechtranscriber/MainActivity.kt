@@ -103,6 +103,16 @@ class MainActivity : ComponentActivity() {
                             viewModel.onListeningStopped()
                             // Cancelar la transcripción borrando el texto temporal
                             viewModel.cancelTranscription()
+                        },
+                        onExport = {
+                            val success = viewModel.exportTranscription()
+                            if (!success) {
+                                Toast.makeText(
+                                    this,
+                                    "No hay contenido para exportar",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     )
                 }

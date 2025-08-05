@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.speechtranscriber.model.SpeechRecognizerHelper
 import com.example.speechtranscriber.permission.PermissionManager
 import com.example.speechtranscriber.permission.PermissionState
+import com.example.speechtranscriber.export.ExportManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val permissionManager: PermissionManager
+    private val permissionManager: PermissionManager,
+    private val exportManager: ExportManager
 ) : ViewModel() {
 
     // Texto temporal que se muestra en tiempo real durante la transcripción
@@ -102,5 +104,13 @@ class MainViewModel @Inject constructor(
 
     fun openAppSettings(context: Context) {
         permissionManager.openAppSettings(context)
+    }
+    
+    fun exportTranscription(): Boolean {
+        return if (_permanentTranscription.value.isNotBlank()) {
+            exportManager.exportTranscription(_permanentTranscription.value)
+        } else {
+            false
+        }
     }
 }
