@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.speechtranscriber.model.SpeechRecognizerHelper
 import com.example.speechtranscriber.permission.PermissionManager
 import com.example.speechtranscriber.permission.PermissionState
+import com.example.speechtranscriber.export.ExportManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val permissionManager: PermissionManager
+    private val permissionManager: PermissionManager,
+    private val exportManager: ExportManager
 ) : ViewModel() {
 
     // Texto temporal que se muestra en tiempo real durante la transcripción
@@ -30,10 +32,6 @@ class MainViewModel @Inject constructor(
     //Estado de la escucha
     private val _isListening = mutableStateOf(false)
     val isListening: State<Boolean> = _isListening
-
-    // Estado para controlar si se tienen permisos
-    private val _hasAudioPermission = mutableStateOf(false)
-    val hasAudioPermission: State<Boolean> = _hasAudioPermission
 
     private var recognizerHelper: SpeechRecognizerHelper? = null
 
@@ -94,11 +92,6 @@ class MainViewModel @Inject constructor(
         _isListening.value = true
     }
 
-    // Método para actualizar el estado de permisos
-    fun updateAudioPermission(hasPermission: Boolean) {
-        _hasAudioPermission.value = hasPermission
-    }
-
     fun checkMicrophonePermission() {
         viewModelScope.launch {
             _permissionState.value = permissionManager.checkMicrophonePermission()
@@ -111,5 +104,13 @@ class MainViewModel @Inject constructor(
 
     fun openAppSettings(context: Context) {
         permissionManager.openAppSettings(context)
+    }
+    
+    fun exportTranscription(): Boolean {
+        return if (_permanentTranscription.value.isNotBlank()) {
+            exportManager.exportTranscription(_permanentTranscription.value)
+        } else {
+            false
+        }
     }
 }
