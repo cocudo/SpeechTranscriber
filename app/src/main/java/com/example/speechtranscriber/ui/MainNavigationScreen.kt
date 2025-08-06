@@ -63,6 +63,13 @@ fun MainNavigationScreen(
             modifier = modifier
         ) {
             composable(NavRoutes.Main.route) {
+                // Limpiar la sesión actual cuando se entra a nueva transcripción
+                LaunchedEffect(Unit) {
+                    viewModel.clearCurrentSession()
+                    // Cerrar el drawer después de limpiar la sesión
+                    drawerState.close()
+                }
+                
                 MainScreen(
                     viewModel = viewModel,
                     modifier = Modifier.padding(PaddingValues()),

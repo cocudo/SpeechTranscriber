@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,23 +38,10 @@ fun NavigationDrawer(
         
         // Opciones del menú
         NavigationDrawerItem(
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = null
-                )
-            },
-            label = {
-                Text(
-                    text = stringResource(R.string.menu_transcription),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            },
+            icon = { Icon(Icons.Default.Add, contentDescription = null) },
+            label = { Text(stringResource(R.string.menu_transcription)) },
             selected = false,
-            onClick = {
-                onNavigateToTranscription()
-                onCloseDrawer()
-            },
+            onClick = onNavigateToTranscription,
             modifier = Modifier.padding(horizontal = 12.dp)
         )
         

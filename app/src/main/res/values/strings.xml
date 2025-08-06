@@ -20,7 +20,8 @@
     <!-- Navigation -->
     <string name="navigate_back">Volver</string>
     <string name="menu_drawer">Menú</string>
-    <string name="menu_transcription">Transcripción</string>
+    <!-- Navigation Menu -->
+    <string name="menu_transcription">Nueva Transcripción</string>
     <string name="menu_saved_sessions">Sesiones Guardadas</string>
     
     <!-- Buttons -->
