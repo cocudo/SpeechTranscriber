@@ -49,6 +49,9 @@ fun MainNavigationScreen(
                 onNavigateToSavedSessions = {
                     navController.navigate(NavRoutes.SavedSessions.route)
                 },
+                onNavigateToSettings = {
+                    navController.navigate(NavRoutes.Settings.route)
+                },
                 onCloseDrawer = {
                     scope.launch {
                         drawerState.close()
@@ -96,6 +99,16 @@ fun MainNavigationScreen(
                     },
                     onLoadSession = { sessionId ->
                         navController.navigate(NavRoutes.LoadSession.createRoute(sessionId))
+                    },
+                    modifier = Modifier.padding(PaddingValues())
+                )
+            }
+            
+            composable(NavRoutes.Settings.route) {
+                SettingsScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = {
+                        navController.popBackStack()
                     },
                     modifier = Modifier.padding(PaddingValues())
                 )

@@ -23,6 +23,13 @@
     <!-- Navigation Menu -->
     <string name="menu_transcription">Nueva Transcripción</string>
     <string name="menu_saved_sessions">Sesiones Guardadas</string>
+    <string name="menu_settings">Opciones</string>
+    
+    <!-- Settings Screen -->
+    <string name="settings_title">Opciones</string>
+    <string name="settings_transcription_section">Transcripción</string>
+    <string name="settings_future_options">Más opciones próximamente</string>
+    <string name="settings_future_options_description">Aquí se añadirán más configuraciones en futuras versiones de la aplicación.</string>
     
     <!-- Buttons -->
     <string name="button_start_transcription">Iniciar Transcripción</string>

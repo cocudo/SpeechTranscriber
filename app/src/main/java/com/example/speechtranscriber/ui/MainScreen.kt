@@ -55,9 +55,6 @@ fun MainScreen(
     
     // Estado para el título de la sesión
     val sessionTitle by viewModel.sessionTitle
-    
-    // Estado para la conversión automática de números
-    val autoConvertNumbers by viewModel.autoConvertNumbers
 
     Scaffold(
         topBar = {
@@ -130,39 +127,6 @@ fun MainScreen(
                     }
                 }
 
-                // Switch para conversión automática de números
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.auto_convert_numbers),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.auto_convert_numbers_description),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Switch(
-                            checked = autoConvertNumbers,
-                            onCheckedChange = { viewModel.toggleAutoConvertNumbers() }
-                        )
-                    }
-                }
-
                 // Área de texto temporal (en tiempo real)
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -230,7 +194,7 @@ fun MainScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(200.dp) // Reducido de 240dp a 200dp
+                                .height(260.dp) // Aumentado de 200dp a 260dp
                                 .background(
                                     color = MaterialTheme.colorScheme.surfaceVariant,
                                     shape = RoundedCornerShape(8.dp)

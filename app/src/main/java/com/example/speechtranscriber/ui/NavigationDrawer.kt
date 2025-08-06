@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,6 +20,7 @@ import com.example.speechtranscriber.R
 fun NavigationDrawer(
     onNavigateToTranscription: () -> Unit,
     onNavigateToSavedSessions: () -> Unit,
+    onNavigateToSettings: () -> Unit,
     onCloseDrawer: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -46,23 +48,23 @@ fun NavigationDrawer(
         )
         
         NavigationDrawerItem(
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.List,
-                    contentDescription = null
-                )
-            },
-            label = {
-                Text(
-                    text = stringResource(R.string.menu_saved_sessions),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            },
+            icon = { Icon(Icons.Default.List, contentDescription = null) },
+            label = { Text(stringResource(R.string.menu_saved_sessions)) },
             selected = false,
-            onClick = {
-                onNavigateToSavedSessions()
-                onCloseDrawer()
-            },
+            onClick = onNavigateToSavedSessions,
+            modifier = Modifier.padding(horizontal = 12.dp)
+        )
+
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            color = MaterialTheme.colorScheme.outlineVariant
+        )
+
+        NavigationDrawerItem(
+            icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+            label = { Text(stringResource(R.string.menu_settings)) },
+            selected = false,
+            onClick = onNavigateToSettings,
             modifier = Modifier.padding(horizontal = 12.dp)
         )
         
