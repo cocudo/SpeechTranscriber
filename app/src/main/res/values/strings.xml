@@ -8,7 +8,34 @@
     <string name="permission_request">Solicitar permiso</string>
     <string name="permission_open_settings">Abrir ajustes</string>
     <string name="permission_info_tooltip">La app necesita acceso al micrófono para transcribir tu voz a texto.</string>
+    <!-- Export -->
     <string name="export_transcription">Exportar Transcripción</string>
+    <string name="export_description">Compartir transcripción como archivo de texto</string>
+    
+    <!-- Save Session -->
+    <string name="save_session">Guardar Sesión</string>
+    <string name="saving_session">Guardando...</string>
+    <string name="save_session_description">Guardar la transcripción actual en la base de datos local</string>
+    
+    <!-- Navigation -->
+    <string name="navigate_back">Volver</string>
+    <string name="menu_drawer">Menú</string>
+    <string name="menu_transcription">Transcripción</string>
+    <string name="menu_saved_sessions">Sesiones Guardadas</string>
+    
+    <!-- Buttons -->
+    <string name="button_start_transcription">Iniciar Transcripción</string>
+    <string name="button_stop_transcription">Parar Transcripción</string>
+    <string name="button_cancel">Cancelar</string>
+    <string name="button_export">Exportar</string>
+    <string name="button_save">Guardar</string>
+    
+    <!-- Saved Sessions Screen -->
+    <string name="saved_sessions_title">Sesiones Guardadas</string>
+    <string name="no_saved_sessions">No hay sesiones guardadas</string>
+    <string name="no_saved_sessions_description">Las transcripciones que guardes aparecerán aquí para su posterior consulta</string>
+    <string name="session_characters_count">%d caracteres</string>
+    <string name="session_id">ID: %d</string>
     <string name="export_success">Transcripción exportada correctamente</string>
     <string name="export_error">Error al exportar la transcripción</string>
     <string name="export_no_content">No hay contenido para exportar</string>

@@ -6,6 +6,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,7 +23,10 @@ import com.example.speechtranscriber.permission.PermissionState
 import com.example.speechtranscriber.permission.PermissionStatusCard
 import com.example.speechtranscriber.export.ExportButton
 import com.example.speechtranscriber.viewmodel.MainViewModel
+import androidx.compose.ui.res.stringResource
+import com.example.speechtranscriber.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
@@ -27,19 +36,44 @@ fun MainScreen(
     onStartListening: () -> Unit,
     onStopListening: () -> Unit,
     onCancelTranscription: () -> Unit,
-    onExport: () -> Unit
+    onExport: () -> Unit,
+    onSaveSession: () -> Unit,
+    onOpenDrawer: () -> Unit
 ) {
     val temporaryTranscription by viewModel.temporaryTranscription
     val permanentTranscription by viewModel.permanentTranscription
     val isListening by viewModel.isListening
     val permissionState by viewModel.permissionState.collectAsState()
+    
+    // Estados para guardar sesión
+    val isSavingSession by viewModel.isSavingSession
+    val saveSessionMessage by viewModel.saveSessionMessage
 
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // TopAppBar con botón del menú
+        TopAppBar(
+            title = {
+                Text(
+                    text = stringResource(R.string.menu_transcription),
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = onOpenDrawer) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = stringResource(R.string.menu_drawer)
+                    )
+                }
+            }
+        )
+
         // Card de permisos si no está concedido
         if (permissionState != PermissionState.Granted) {
             PermissionStatusCard(
@@ -156,7 +190,7 @@ fun MainScreen(
                 }
             }
 
-            // Controles de botones
+            // Controles de botones en layout horizontal
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -177,29 +211,124 @@ fun MainScreen(
                         enabled = true,
                         modifier = Modifier.fillMaxWidth()
                     ) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = if (isListening) "Parar Transcripción" else "Iniciar Transcripción",
+                            text = if (isListening) {
+                                stringResource(R.string.button_stop_transcription)
+                            } else {
+                                stringResource(R.string.button_start_transcription)
+                            },
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
 
-                    // Botón de cancelar
-                    OutlinedButton(
-                        onClick = onCancelTranscription,
-                        enabled = isListening || temporaryTranscription.isNotBlank(),
-                        modifier = Modifier.fillMaxWidth()
+                    // Botones secundarios en layout horizontal
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(
-                            text = "Cancelar Transcripción",
-                            style = MaterialTheme.typography.titleMedium
-                        )
+                        // Botón de cancelar
+                        OutlinedButton(
+                            onClick = onCancelTranscription,
+                            enabled = isListening || temporaryTranscription.isNotBlank(),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = stringResource(R.string.button_cancel),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        // Botón de exportar
+                        OutlinedButton(
+                            onClick = onExport,
+                            enabled = permanentTranscription.isNotBlank(),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = stringResource(R.string.button_export),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        // Botón de guardar sesión
+                        OutlinedButton(
+                            onClick = onSaveSession,
+                            enabled = permanentTranscription.isNotBlank(),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = stringResource(R.string.button_save),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
                     }
 
-                    // Botón de exportar
-                    ExportButton(
-                        onExport = onExport,
-                        enabled = permanentTranscription.isNotBlank()
-                    )
+                    // Mensaje de estado del guardado (si existe)
+                    if (saveSessionMessage.isNotBlank()) {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (saveSessionMessage.contains("Error")) {
+                                    MaterialTheme.colorScheme.errorContainer
+                                } else {
+                                    MaterialTheme.colorScheme.primaryContainer
+                                }
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = saveSessionMessage,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = if (saveSessionMessage.contains("Error")) {
+                                        MaterialTheme.colorScheme.onErrorContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.onPrimaryContainer
+                                    },
+                                    modifier = Modifier.weight(1f)
+                                )
+                                
+                                IconButton(
+                                    onClick = { viewModel.clearSaveSessionMessage() },
+                                    modifier = Modifier.size(24.dp)
+                                ) {
+                                    Text(
+                                        text = "×",
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
