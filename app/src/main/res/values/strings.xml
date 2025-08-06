@@ -32,6 +32,10 @@
     <string name="button_save_session">Guardar Sesión</string>
     <string name="button_save_session_edit">Actualizar Sesión</string>
     
+    <!-- Number Conversion -->
+    <string name="auto_convert_numbers">Conversión automática de números</string>
+    <string name="auto_convert_numbers_description">Convierte números hablados a formato numérico</string>
+    
     <!-- Saved Sessions Screen -->
     <string name="saved_sessions_title">Sesiones Guardadas</string>
     <string name="no_saved_sessions">No hay sesiones guardadas</string>

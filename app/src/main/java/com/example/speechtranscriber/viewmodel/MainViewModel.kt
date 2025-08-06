@@ -63,6 +63,10 @@ class MainViewModel @Inject constructor(
     private val _sessionTitle = mutableStateOf("")
     val sessionTitle: State<String> = _sessionTitle
 
+    // Estado para la conversión automática de números
+    private val _autoConvertNumbers = mutableStateOf(true)
+    val autoConvertNumbers: State<Boolean> = _autoConvertNumbers
+
     // Método para actualizar el texto temporal en tiempo real
     fun updateTemporaryTranscription(text: String) {
         _temporaryTranscription.value = text
@@ -198,6 +202,11 @@ class MainViewModel @Inject constructor(
     // Método para actualizar el título de la sesión
     fun updateSessionTitle(title: String) {
         _sessionTitle.value = title
+    }
+
+    // Método para cambiar la conversión automática de números
+    fun toggleAutoConvertNumbers() {
+        _autoConvertNumbers.value = !_autoConvertNumbers.value
     }
 
     // Método para cargar las sesiones guardadas
