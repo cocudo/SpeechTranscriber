@@ -100,31 +100,21 @@ fun MainScreen(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(
-                            text = "Título de la sesión:",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Medium
+                    OutlinedTextField(
+                        value = sessionTitle,
+                        onValueChange = { viewModel.updateSessionTitle(it) },
+                        placeholder = {
+                            Text("Título de la sesión (opcional)")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
                         )
-                        
-                        Spacer(modifier = Modifier.height(8.dp))
-                        
-                        OutlinedTextField(
-                            value = sessionTitle,
-                            onValueChange = { viewModel.updateSessionTitle(it) },
-                            placeholder = {
-                                Text("Introduce un título para esta sesión (opcional)")
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                            )
-                        )
-                    }
+                    )
                 }
 
                 // Área de texto temporal (en tiempo real)
