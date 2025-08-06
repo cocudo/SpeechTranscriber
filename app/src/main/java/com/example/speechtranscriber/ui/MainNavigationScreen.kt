@@ -45,12 +45,21 @@ fun MainNavigationScreen(
                     navController.navigate(NavRoutes.Main.route) {
                         popUpTo(NavRoutes.Main.route) { inclusive = true }
                     }
+                    scope.launch {
+                        drawerState.close()
+                    }
                 },
                 onNavigateToSavedSessions = {
                     navController.navigate(NavRoutes.SavedSessions.route)
+                    scope.launch {
+                        drawerState.close()
+                    }
                 },
                 onNavigateToSettings = {
                     navController.navigate(NavRoutes.Settings.route)
+                    scope.launch {
+                        drawerState.close()
+                    }
                 },
                 onCloseDrawer = {
                     scope.launch {
@@ -69,8 +78,6 @@ fun MainNavigationScreen(
                 // Limpiar la sesión actual cuando se entra a nueva transcripción
                 LaunchedEffect(Unit) {
                     viewModel.clearCurrentSession()
-                    // Cerrar el drawer después de limpiar la sesión
-                    drawerState.close()
                 }
                 
                 MainScreen(
