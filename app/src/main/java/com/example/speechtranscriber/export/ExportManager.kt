@@ -13,13 +13,13 @@ class ExportManager @Inject constructor(
     private val exportService: ExportService
 ) {
     
-    fun exportTranscription(content: String): Boolean {
+    fun exportTranscription(content: String, title: String? = null): Boolean {
         return try {
             // Limpiar archivos antiguos
             exportService.cleanupOldFiles()
             
             // Crear archivo TXT
-            val fileUri = exportService.createTxtFile(content)
+            val fileUri = exportService.createTxtFile(content, title)
             
             if (fileUri != null) {
                 // Lanzar intent de compartir

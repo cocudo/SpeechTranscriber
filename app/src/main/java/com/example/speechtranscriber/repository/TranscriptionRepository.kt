@@ -24,6 +24,10 @@ class TranscriptionRepository @Inject constructor(
         return transcriptionDao.insertTranscription(transcription)
     }
     
+    suspend fun updateTranscription(transcription: TranscriptionEntity) {
+        transcriptionDao.updateTranscription(transcription)
+    }
+    
     suspend fun deleteTranscription(transcription: TranscriptionEntity) {
         transcriptionDao.deleteTranscription(transcription)
     }

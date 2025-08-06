@@ -29,6 +29,8 @@
     <string name="button_cancel">Cancelar</string>
     <string name="button_export">Exportar</string>
     <string name="button_save">Guardar</string>
+    <string name="button_save_session">Guardar Sesión</string>
+    <string name="button_save_session_edit">Actualizar Sesión</string>
     
     <!-- Saved Sessions Screen -->
     <string name="saved_sessions_title">Sesiones Guardadas</string>

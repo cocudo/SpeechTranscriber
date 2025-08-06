@@ -12,6 +12,9 @@ interface TranscriptionDao {
     @Insert
     suspend fun insertTranscription(transcription: TranscriptionEntity): Long
     
+    @Update
+    suspend fun updateTranscription(transcription: TranscriptionEntity)
+    
     @Delete
     suspend fun deleteTranscription(transcription: TranscriptionEntity)
     

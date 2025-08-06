@@ -9,6 +9,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.speechtranscriber.navigation.NavRoutes
 import com.example.speechtranscriber.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
@@ -85,7 +87,38 @@ fun MainNavigationScreen(
                     onNavigateBack = {
                         navController.popBackStack()
                     },
+                    onLoadSession = { sessionId ->
+                        navController.navigate(NavRoutes.LoadSession.createRoute(sessionId))
+                    },
                     modifier = Modifier.padding(PaddingValues())
+                )
+            }
+            
+            composable(
+                route = NavRoutes.LoadSession.route,
+                arguments = listOf(
+                    navArgument("sessionId") { type = NavType.LongType }
+                )
+            ) { backStackEntry ->
+                val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: 0L
+                LaunchedEffect(sessionId) {
+                    viewModel.loadSession(sessionId)
+                }
+                MainScreen(
+                    viewModel = viewModel,
+                    modifier = Modifier.padding(PaddingValues()),
+                    onRequestPermission = onRequestPermission,
+                    onOpenSettings = onOpenSettings,
+                    onStartListening = onStartListening,
+                    onStopListening = onStopListening,
+                    onCancelTranscription = onCancelTranscription,
+                    onExport = onExport,
+                    onSaveSession = onSaveSession,
+                    onOpenDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    }
                 )
             }
         }

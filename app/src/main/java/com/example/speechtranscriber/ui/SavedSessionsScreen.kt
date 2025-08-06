@@ -24,6 +24,7 @@ import java.util.*
 fun SavedSessionsScreen(
     sessions: List<TranscriptionEntity>,
     onNavigateBack: () -> Unit,
+    onLoadSession: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -88,7 +89,7 @@ fun SavedSessionsScreen(
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
                 items(sessions) { session ->
-                    SavedSessionCard(session = session)
+                    SavedSessionCard(session = session, onLoadSession = onLoadSession)
                 }
             }
         }
@@ -99,19 +100,25 @@ fun SavedSessionsScreen(
 @Composable
 fun SavedSessionCard(
     session: TranscriptionEntity,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onLoadSession: (Long) -> Unit
 ) {
     val dateFormat = remember { SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()) }
     
     Card(
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .height(140.dp), // Altura fija
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        onClick = { onLoadSession(session.id) }
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Título y fecha
+            // Título destacado y fecha
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -120,7 +127,11 @@ fun SavedSessionCard(
                 Text(
                     text = session.title,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
                 )
                 Text(
                     text = dateFormat.format(session.timestamp),
@@ -129,36 +140,30 @@ fun SavedSessionCard(
                 )
             }
             
-            // Preview del contenido
-            Text(
-                text = session.content,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            
-            // Información adicional
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            // Preview del contenido con altura fija
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             ) {
                 Text(
-                    text = stringResource(
-                        R.string.session_characters_count,
-                        session.content.length
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                
-                Text(
-                    text = stringResource(R.string.session_id, session.id),
-                    style = MaterialTheme.typography.bodySmall,
+                    text = session.content,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+            
+            // Solo contador de caracteres
+            Text(
+                text = stringResource(
+                    R.string.session_characters_count,
+                    session.content.length
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 } 
