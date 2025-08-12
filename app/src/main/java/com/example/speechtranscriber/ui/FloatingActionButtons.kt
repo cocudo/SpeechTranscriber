@@ -7,6 +7,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,25 +23,78 @@ fun FloatingActionButtons(
     onStartListening: () -> Unit,
     onStopListening: () -> Unit,
     onCancelTranscription: () -> Unit,
+    onExport: () -> Unit,
+    onSaveSession: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
-        // Botón de micrófono (estado inicial)
+    var showMenu by remember { mutableStateOf(false) }
+    
+    Box(modifier = modifier.fillMaxSize()) {
+        // Botón de menú (izquierda) - solo visible cuando no está escuchando
         AnimatedVisibility(
             visible = !isListening,
-            enter = fadeIn(animationSpec = tween(300)) + scaleIn(
-                animationSpec = tween(300),
-                initialScale = 0.8f
-            ),
-            exit = fadeOut(animationSpec = tween(300)) + scaleOut(
-                animationSpec = tween(300),
-                targetScale = 0.8f
-            ),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
+            enter = fadeIn(animationSpec = tween(300)) + scaleIn(animationSpec = tween(300), initialScale = 0.8f),
+            exit = fadeOut(animationSpec = tween(300)) + scaleOut(animationSpec = tween(300), targetScale = 0.8f),
+            modifier = Modifier.align(Alignment.BottomStart).padding(16.dp)
+        ) {
+            Column {
+                // Menú desplegable
+                AnimatedVisibility(
+                    visible = showMenu,
+                    enter = slideInVertically(animationSpec = tween(300, easing = EaseOutCubic), initialOffsetY = { it }) + fadeIn(animationSpec = tween(300)),
+                    exit = slideOutVertically(animationSpec = tween(300, easing = EaseInCubic), targetOffsetY = { it }) + fadeOut(animationSpec = tween(300)),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        // Botón Exportar
+                        FloatingActionButton(
+                            onClick = onExport,
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.size(56.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = "Exportar transcripción",
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                        
+                        // Botón Guardar
+                        FloatingActionButton(
+                            onClick = onSaveSession,
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(56.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Save,
+                                contentDescription = "Guardar sesión",
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+                }
+                
+                // Botón principal del menú
+                FloatingActionButton(
+                    onClick = { showMenu = !showMenu },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(56.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Menú de opciones",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+        }
+        
+        // Botón de micrófono (derecha) - solo visible cuando no está escuchando
+        AnimatedVisibility(
+            visible = !isListening,
+            enter = fadeIn(animationSpec = tween(300)) + scaleIn(animationSpec = tween(300), initialScale = 0.8f),
+            exit = fadeOut(animationSpec = tween(300)) + scaleOut(animationSpec = tween(300), targetScale = 0.8f),
+            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
         ) {
             FloatingActionButton(
                 onClick = onStartListening,
@@ -52,20 +108,12 @@ fun FloatingActionButtons(
             }
         }
         
-        // Botones de control (estado de grabación)
+        // Botón Cancelar (derecha) - solo visible cuando está escuchando
         AnimatedVisibility(
             visible = isListening,
-            enter = slideInHorizontally(
-                animationSpec = tween(500, easing = EaseOutCubic),
-                initialOffsetX = { 0 } // Comienza desde la posición del micrófono
-            ) + fadeIn(animationSpec = tween(300)),
-            exit = slideOutHorizontally(
-                animationSpec = tween(500, easing = EaseInCubic),
-                targetOffsetX = { 0 } // Regresa a la posición del micrófono
-            ) + fadeOut(animationSpec = tween(300)),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
+            enter = slideInHorizontally(animationSpec = tween(500, easing = EaseOutCubic), initialOffsetX = { 0 }) + fadeIn(animationSpec = tween(300)),
+            exit = slideOutHorizontally(animationSpec = tween(500, easing = EaseInCubic), targetOffsetX = { 0 }) + fadeOut(animationSpec = tween(300)),
+            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
         ) {
             FloatingActionButton(
                 onClick = onCancelTranscription,
@@ -79,20 +127,12 @@ fun FloatingActionButtons(
             }
         }
         
-        // Botón de stop (aparece desde la posición del micrófono hacia la izquierda)
+        // Botón Stop (izquierda) - solo visible cuando está escuchando
         AnimatedVisibility(
             visible = isListening,
-            enter = slideInHorizontally(
-                animationSpec = tween(500, easing = EaseOutCubic),
-                initialOffsetX = { fullWidth -> fullWidth } // Comienza desde la posición del micrófono
-            ) + fadeIn(animationSpec = tween(300)),
-            exit = slideOutHorizontally(
-                animationSpec = tween(500, easing = EaseInCubic),
-                targetOffsetX = { fullWidth -> fullWidth } // Regresa a la posición del micrófono
-            ) + fadeOut(animationSpec = tween(300)),
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(16.dp)
+            enter = slideInHorizontally(animationSpec = tween(500, easing = EaseOutCubic), initialOffsetX = { fullWidth -> -fullWidth }) + fadeIn(animationSpec = tween(300)),
+            exit = slideOutHorizontally(animationSpec = tween(500, easing = EaseInCubic), targetOffsetX = { fullWidth -> -fullWidth }) + fadeOut(animationSpec = tween(300)),
+            modifier = Modifier.align(Alignment.BottomStart).padding(16.dp)
         ) {
             FloatingActionButton(
                 onClick = onStopListening,

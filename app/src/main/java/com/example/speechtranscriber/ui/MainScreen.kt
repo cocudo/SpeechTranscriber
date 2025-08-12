@@ -166,107 +166,20 @@ fun MainScreen(
                 }
 
                 // Área de texto permanente (acumulativo) - Aumentada aún más
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(
-                            text = "Transcripción permanente:",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Medium
-                        )
-                        
+                Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(text = "Transcripción permanente:", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
                         Spacer(modifier = Modifier.height(8.dp))
-                        
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(260.dp) // Aumentado de 200dp a 260dp
-                                .background(
-                                    color = MaterialTheme.colorScheme.surfaceVariant,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outline,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .padding(12.dp)
-                        ) {
-                            Text(
-                                text = if (permanentTranscription.isBlank()) {
-                                    "Las transcripciones completadas se guardarán aquí"
-                                } else {
-                                    permanentTranscription
-                                },
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = if (permanentTranscription.isBlank()) {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                } else {
-                                    MaterialTheme.colorScheme.onSurface
-                                },
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .verticalScroll(rememberScrollState())
-                            )
+                        Box(modifier = Modifier.fillMaxWidth().height(400.dp).background(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp)).border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp)).padding(12.dp)) {
+                            Text(text = if (permanentTranscription.isBlank()) { "Las transcripciones completadas se guardarán aquí" } else { permanentTranscription }, style = MaterialTheme.typography.bodyMedium, color = if (permanentTranscription.isBlank()) { MaterialTheme.colorScheme.onSurfaceVariant } else { MaterialTheme.colorScheme.onSurface }, modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()))
                         }
                     }
                 }
-
-                // Controles de botones en layout horizontal
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        // Botones secundarios en layout horizontal
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            // Botón de exportar
-                            OutlinedButton(
-                                onClick = onExport,
-                                enabled = permanentTranscription.isNotBlank(),
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Icon(imageVector = Icons.Default.Share, contentDescription = null, modifier = Modifier.size(20.dp))
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = stringResource(R.string.button_export), style = MaterialTheme.typography.bodyMedium)
-                            }
-
-                            // Botón de guardar sesión
-                            OutlinedButton(
-                                onClick = onSaveSession,
-                                enabled = permanentTranscription.isNotBlank(),
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Icon(imageVector = Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = if (isEditingSession) stringResource(R.string.button_save_session_edit) else stringResource(R.string.button_save_session),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                        }
-
-                        // Mensaje de estado del guardado (si existe)
-                        if (saveSessionMessage.isNotBlank()) {
-                            Text(
-                                text = saveSessionMessage,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = if (saveSessionMessage.startsWith("Error")) {
-                                    MaterialTheme.colorScheme.error
-                                } else {
-                                    MaterialTheme.colorScheme.primary
-                                }
-                            )
+                if (saveSessionMessage.isNotBlank()) {
+                    Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), colors = CardDefaults.cardColors(containerColor = if (saveSessionMessage.startsWith("Error")) { MaterialTheme.colorScheme.errorContainer } else { MaterialTheme.colorScheme.primaryContainer })) {
+                        Row(modifier = Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                            Text(text = saveSessionMessage, style = MaterialTheme.typography.bodyMedium, color = if (saveSessionMessage.startsWith("Error")) { MaterialTheme.colorScheme.onErrorContainer } else { MaterialTheme.colorScheme.onPrimaryContainer }, modifier = Modifier.weight(1f))
+                            IconButton(onClick = { viewModel.clearSaveSessionMessage() }, modifier = Modifier.size(24.dp)) { Text(text = "×", style = MaterialTheme.typography.titleMedium) }
                         }
                     }
                 }
@@ -278,7 +191,9 @@ fun MainScreen(
             isListening = isListening,
             onStartListening = onStartListening,
             onStopListening = onStopListening,
-            onCancelTranscription = onCancelTranscription
+            onCancelTranscription = onCancelTranscription,
+            onExport = onExport,
+            onSaveSession = onSaveSession
         )
     }
 }
