@@ -21,7 +21,7 @@ class ExportService @Inject constructor(
         return dateFormat.format(Date())
     }
     
-    fun createTxtFile(content: String): Uri? {
+    fun createTxtFile(content: String, title: String? = null): Uri? {
         return try {
             // Crear directorio temporal si no existe
             val cacheDir = File(context.cacheDir, "exports")
@@ -29,9 +29,21 @@ class ExportService @Inject constructor(
                 cacheDir.mkdirs()
             }
             
-            // Generar nombre del archivo con timestamp
-            val timestamp = generateTimestamp()
-            val fileName = "transcripcion_$timestamp.txt"
+            // Generar nombre del archivo con título o timestamp
+            val fileName = if (!title.isNullOrBlank() && title != "Sesión de transcripción") {
+                // Usar título limpio (sin caracteres especiales)
+                val cleanTitle = title.replace(Regex("[^a-zA-Z0-9\\s]"), "").trim()
+                if (cleanTitle.isNotBlank()) {
+                    "transcripcion_${cleanTitle.replace(" ", "_")}.txt"
+                } else {
+                    val timestamp = generateTimestamp()
+                    "transcripcion_$timestamp.txt"
+                }
+            } else {
+                val timestamp = generateTimestamp()
+                "transcripcion_$timestamp.txt"
+            }
+            
             val file = File(cacheDir, fileName)
             
             // Escribir contenido al archivo

@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import com.example.speechtranscriber.model.SpeechRecognizerHelper
 import com.example.speechtranscriber.permission.PermissionState
-import com.example.speechtranscriber.ui.MainScreen
+import com.example.speechtranscriber.ui.MainNavigationScreen
 import com.example.speechtranscriber.ui.theme.SpeechTranscriberTheme
 import com.example.speechtranscriber.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SpeechTranscriberTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainScreen(
+                    MainNavigationScreen(
                         viewModel = viewModel,
                         modifier = Modifier.padding(innerPadding),
                         onRequestPermission = {
@@ -113,6 +113,9 @@ class MainActivity : ComponentActivity() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
+                        },
+                        onSaveSession = {
+                            viewModel.saveSession()
                         }
                     )
                 }

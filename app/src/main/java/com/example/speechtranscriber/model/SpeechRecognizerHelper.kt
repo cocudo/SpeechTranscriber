@@ -9,6 +9,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
+import com.example.speechtranscriber.utils.NumberConverter
 import java.util.Locale
 
 class SpeechRecognizerHelper (
@@ -108,10 +109,13 @@ class SpeechRecognizerHelper (
                                      timeSinceLastRecognition < DUPLICATE_TIMEOUT_MS
                     
                     if (!isDuplicate && recognizedText.trim().isNotBlank()) {
-                        Log.d("SpeechRecognizer", "✅ Final result: '$recognizedText' (time since last: ${timeSinceLastRecognition}ms)")
+                        // Procesar números hablados antes de enviar el resultado
+                        val processedText = NumberConverter.convertSpokenNumbersToDigits(recognizedText.trim())
+                        
+                        Log.d("SpeechRecognizer", "✅ Final result: '$recognizedText' -> '$processedText' (time since last: ${timeSinceLastRecognition}ms)")
                         lastRecognizedText = recognizedText.trim()
                         lastRecognitionTime = currentTime
-                        onResult(recognizedText.trim())
+                        onResult(processedText)
                     } else if (isDuplicate) {
                         Log.d("SpeechRecognizer", "⚠️ Skipping duplicate result: '$recognizedText' (time since last: ${timeSinceLastRecognition}ms)")
                     } else {
