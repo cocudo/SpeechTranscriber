@@ -37,8 +37,8 @@
     <string name="button_cancel">Cancelar</string>
     <string name="button_export">Exportar</string>
     <string name="button_save">Guardar</string>
-    <string name="button_save_session">Guardar Sesión</string>
-    <string name="button_save_session_edit">Actualizar Sesión</string>
+    <string name="button_save_session">Guardar</string>
+    <string name="button_save_session_edit">Actualizar</string>
     
     <!-- Number Conversion -->
     <string name="auto_convert_numbers">Conversión automática de números</string>

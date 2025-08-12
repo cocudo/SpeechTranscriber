@@ -2,9 +2,8 @@ package com.example.speechtranscriber.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -36,7 +35,7 @@ fun NavigationDrawer(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Divider()
+        HorizontalDivider()
         
         // Opciones del menú
         NavigationDrawerItem(
@@ -71,7 +70,7 @@ fun NavigationDrawer(
         Spacer(modifier = Modifier.weight(1f))
         
         // Footer del drawer
-        Divider()
+        HorizontalDivider()
         Text(
             text = "Speech Transcriber v1.0",
             style = MaterialTheme.typography.bodySmall,

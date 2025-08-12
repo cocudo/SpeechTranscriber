@@ -225,73 +225,20 @@ fun MainScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // Botón principal de Iniciar/Parar
-                        Button(
-                            onClick = {
-                                if (isListening) {
-                                    onStopListening()
-                                } else {
-                                    onStartListening()
-                                }
-                            },
-                            enabled = true,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.PlayArrow,
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = if (isListening) {
-                                    stringResource(R.string.button_stop_transcription)
-                                } else {
-                                    stringResource(R.string.button_start_transcription)
-                                },
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-
                         // Botones secundarios en layout horizontal
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            // Botón de cancelar
-                            OutlinedButton(
-                                onClick = onCancelTranscription,
-                                enabled = isListening || temporaryTranscription.isNotBlank(),
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = stringResource(R.string.button_cancel),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-
                             // Botón de exportar
                             OutlinedButton(
                                 onClick = onExport,
                                 enabled = permanentTranscription.isNotBlank(),
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Share,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(20.dp)
-                                )
+                                Icon(imageVector = Icons.Default.Share, contentDescription = null, modifier = Modifier.size(20.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = stringResource(R.string.button_export),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                                Text(text = stringResource(R.string.button_export), style = MaterialTheme.typography.bodyMedium)
                             }
 
                             // Botón de guardar sesión
@@ -300,18 +247,10 @@ fun MainScreen(
                                 enabled = permanentTranscription.isNotBlank(),
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(20.dp)
-                                )
+                                Icon(imageVector = Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = if (isEditingSession) {
-                                        stringResource(R.string.button_save_session_edit)
-                                    } else {
-                                        stringResource(R.string.button_save_session)
-                                    },
+                                    text = if (isEditingSession) stringResource(R.string.button_save_session_edit) else stringResource(R.string.button_save_session),
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }
@@ -319,49 +258,27 @@ fun MainScreen(
 
                         // Mensaje de estado del guardado (si existe)
                         if (saveSessionMessage.isNotBlank()) {
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = if (saveSessionMessage.contains("Error")) {
-                                        MaterialTheme.colorScheme.errorContainer
-                                    } else {
-                                        MaterialTheme.colorScheme.primaryContainer
-                                    }
-                                )
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(12.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = saveSessionMessage,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = if (saveSessionMessage.contains("Error")) {
-                                            MaterialTheme.colorScheme.onErrorContainer
-                                        } else {
-                                            MaterialTheme.colorScheme.onPrimaryContainer
-                                        },
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                    
-                                    IconButton(
-                                        onClick = { viewModel.clearSaveSessionMessage() },
-                                        modifier = Modifier.size(24.dp)
-                                    ) {
-                                        Text(
-                                            text = "×",
-                                            style = MaterialTheme.typography.titleMedium
-                                        )
-                                    }
+                            Text(
+                                text = saveSessionMessage,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = if (saveSessionMessage.startsWith("Error")) {
+                                    MaterialTheme.colorScheme.error
+                                } else {
+                                    MaterialTheme.colorScheme.primary
                                 }
-                            }
+                            )
                         }
                     }
                 }
             }
         }
+        
+        // Botones flotantes animados
+        FloatingActionButtons(
+            isListening = isListening,
+            onStartListening = onStartListening,
+            onStopListening = onStopListening,
+            onCancelTranscription = onCancelTranscription
+        )
     }
 }
